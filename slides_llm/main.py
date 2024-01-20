@@ -11,8 +11,7 @@ import dotenv
 import os
 import datetime
 from slides_llm.firebase_utils import db
-
-# 3e567ec8
+import uuid
 
 
 client = OpenAI()
@@ -38,3 +37,33 @@ app = FastAPI()
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
+
+@app.post("/conversation")
+def create_conversation():
+    # create id
+    conversation_id = str(uuid.uuid4())
+    # create conversation
+    conversation = {
+        "id": conversation_id,
+        "created_at": datetime.datetime.now(),
+        "messages": [],
+    }
+    # save conversation
+    db.collection("conversations").document(conversation_id).set(conversation)
+    return conversation
+
+@app.post("/conversation/{conversation_id}/message")
+def create_message(conversation_id: str, message: str):
+    # get conversation
+    conversation_ref = db.collection("conversations").document(conversation_id)
+    conversation = conversation_ref.get().to_dict()
+    # create message
+    message = {
+        "id": str(uuid.uuid4()),
+        "created_at": datetime.datetime.now(),
+        "message": message,
+    }
+    # save message
+    conversation["messages"].append(message)
+    conversation_ref.set(conversation)
+    return conversation
