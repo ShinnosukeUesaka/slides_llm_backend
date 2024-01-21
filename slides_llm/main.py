@@ -15,10 +15,14 @@ import uuid
 import json
 from elevenlabs import generate, play
 from elevenlabs import set_api_key
+from fastapi import FastAPI, HTTPException, Body
+from pydantic import BaseModel, Field
+from typing import List, Optional
 
 set_api_key(os.environ.get("XI_API_KEY"))
 
 client = OpenAI()
+
 
 
 app = FastAPI()
@@ -29,11 +33,13 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-from fastapi import FastAPI, HTTPException, Body
-from pydantic import BaseModel, Field
-from typing import List, Optional
+
 
 app = FastAPI()
+
+
+class Message(BaseModel):
+    mesage: str
 
 # test endpoint
 @app.get("/")
@@ -55,8 +61,9 @@ def create_conversation():
     return conversation
 
 @app.post("/conversations/{conversation_id}/message")
-def create_message(conversation_id: str, message: str):
+def create_message(conversation_id: str, message: Message):
     # get conversation
+    message = message.mesage
     conversation_ref = db.collection("conversations").document(conversation_id)
     conversation = conversation_ref.get().to_dict()
     past_messages = conversation["messages"]
