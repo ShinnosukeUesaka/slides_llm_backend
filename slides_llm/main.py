@@ -157,10 +157,15 @@ Your answer must follow the following json format.
                                                     "type": "string",
                                                     "description": "Two short sentences."
                                                 }
+                                                "image": {
+                                                    "type": "string",
+                                                    "description": "Prompt for the image\nid: image\n"
+                                                }
                                             },
                                             "required": [
                                                 "title",
-                                                "details"
+                                                "details",
+                                                "image"
                                             ]
                                         }
                                     }
@@ -246,6 +251,10 @@ def create_slides(past_messages: list = []):
     for slide in returned_dictionary["slides"]:
         if slide["template"]["template_id"] == "first_slide":
             slide["template"]["image"] = generate_image(slide["template"]["image"])
+        elif slide["template"]["template_id"] == "three_elements":
+            for index, element in enumerate(slide["template"]["elements"]):
+                slide["template"]["elements"][index]["image"] = generate_image(element["image"])
+                
         actions.append(
             {
                 "type": "show_slide",
