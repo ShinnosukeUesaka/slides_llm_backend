@@ -341,7 +341,7 @@ def generate_image(prompt: str):
 
 def create_tts(text: str, voice: str = "Bill", model: str = "eleven_multilingual_v2"):
 
-    audio = generate(
+    audio: bytes = generate(
         text=text,
         voice=voice,
         model=model,
@@ -350,13 +350,12 @@ def create_tts(text: str, voice: str = "Bill", model: str = "eleven_multilingual
     # save the audio in firestore storage and make it public
     with TemporaryDirectory() as temp_dir:
         audio_path = Path(temp_dir) / "audio.mp3"
-        audio.save(audio_path)
-        # upload to storage
+        with open(audio_path, "wb") as f:
+            f.write(audio)
+        audio_path = str(audio_path)
         id = str(uuid.uuid4())
-        blob = bucket.blob(f"audio/{id}.mp3")
+        blob = bucket.blob(f'audio/{id}.mp3')
         blob.upload_from_filename(audio_path)
-        # make it public
         blob.make_public()
-        # get url
         url = blob.public_url
     return url
