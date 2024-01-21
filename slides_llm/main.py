@@ -1,3 +1,6 @@
+import dotenv
+
+dotenv.load_dotenv('slides_llm/.env', override=True)
 from pathlib import Path
 from fastapi import FastAPI, Header
 from urllib.parse import urlencode
@@ -7,9 +10,7 @@ from openai import Client, OpenAI
 from typing import Annotated
 from starlette.middleware.cors import CORSMiddleware
 from tempfile import TemporaryDirectory
-import dotenv
 
-dotenv.load_dotenv()
 
 import os
 import datetime
@@ -117,7 +118,7 @@ Your answer must follow the following json format.
                                     },
                                     "sub_title": {
                                         "type": "string",
-                                        "description": "id: sub-title"
+                                        "description": "id: sub_title"
                                     },
                                     "image": {
                                         "type": "string",
@@ -144,7 +145,7 @@ Your answer must follow the following json format.
                                         "type": "array",
                                         "minItems": 3,
                                         "maxItems": 3,
-                                        "description": "id: element-element_index. ex) element-0\ntitles and details would be displayed using this id.",
+                                        "description": "id: element_element_index. ex) element_1\ntitles and details would be displayed using this id.  index starts from 1",
                                         "items": {
                                             "type": "object",
                                             "properties": {
@@ -182,7 +183,7 @@ Your answer must follow the following json format.
                                         "type": "array",
                                         "minItems": 3,
                                         "maxItems": 3,
-                                        "description": "id: element-element_index. ex) element-0\ntitles and details would be displayed using this id.",
+                                        "description": "id: element_element_index. ex) element_1\ntitles and details would be displayed using this id. index starts from 1",
                                         "items": {
                                             "type": "object",
                                             "properties": {
@@ -291,7 +292,7 @@ def create_slides(past_messages: list = []):
         actions.append(
             {
                 "type": "show_slide",
-                "content": slide
+                "content": slide["template"]
             }
         )
         # split script by [element-id]
