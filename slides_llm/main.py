@@ -8,6 +8,9 @@ from typing import Annotated
 from starlette.middleware.cors import CORSMiddleware
 from tempfile import TemporaryDirectory
 import dotenv
+
+dotenv.load_dotenv()
+
 import os
 import datetime
 from slides_llm.firebase_utils import db, bucket
@@ -39,7 +42,7 @@ app = FastAPI()
 
 
 class Message(BaseModel):
-    mesage: str
+    message: str
 
 # test endpoint
 @app.get("/")
@@ -63,7 +66,7 @@ def create_conversation():
 @app.post("/conversations/{conversation_id}/message")
 def create_message(conversation_id: str, message: Message):
     # get conversation
-    message = message.mesage
+    message = message.message
     conversation_ref = db.collection("conversations").document(conversation_id)
     conversation = conversation_ref.get().to_dict()
     past_messages = conversation["messages"]
@@ -336,7 +339,7 @@ def format_script(input_text):
 def generate_image(prompt: str):
     return "https://www.google.com/example.png"
 
-def create_tts(text: str, voice: str = "Bella", model: str = "eleven_multilingual_v2"):
+def create_tts(text: str, voice: str = "Bill", model: str = "eleven_multilingual_v2"):
 
     audio = generate(
         text=text,
