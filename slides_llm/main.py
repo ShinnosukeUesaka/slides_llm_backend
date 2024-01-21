@@ -71,10 +71,10 @@ def create_message(conversation_id: str, message: Message):
     message = message.message
     conversation_ref = db.collection("conversations").document(conversation_id)
     conversation = conversation_ref.get().to_dict()
+    conversation["messages"].append({"role": "user", "content": message})
     past_messages = conversation["messages"]
     # generate slides
     result, actions = create_slides(past_messages)
-    conversation["messages"].append({"role": "user", "content": message})
     conversation["messages"].append({"role": "assistant", "content": result})
     conversation_ref.set(conversation)
     return actions
@@ -92,7 +92,7 @@ Example of the script)
 [title, sub-title] I will explain the history of spaceships. [bullet-point-1]  The development of space ships started in....
 
 Other Instruction:
-For images on the slides, write the prompt. The prompt would be used to generate an image using AI.
+For images on the slides, write 3 keywords. The keywords would be used to search an image online.
 
 Your answer must follow the following json format.
 
@@ -296,23 +296,29 @@ def format_script(input_text):
 
 def generate_image(prompt: str):
     # used crawler to get the image
-    crawler = GoogleImageCrawler(
-        downloader_threads=4,
-        storage={'root_dir': 'images'})
-    crawler.crawl(
-        keyword=prompt,
-        max_num=1,
-        file_idx_offset=0)
-    # get file in the folder
-    file_path =  os.listdir("images")[0]
-    # upload to firebase
-    id = str(uuid.uuid4())
-    blob = bucket.blob(f'images/{id}.jpg')
-    blob.upload_from_filename(file_path)
-    blob.make_public()
-    url = blob.public_url
-    # delete the file
-    os.remove(file_path)
+    try:
+        crawler = GoogleImageCrawler(
+            downloader_threads=4,
+            # use path from current file
+            storage={'root_dir': os.path.join(os.path.dirname(__file__), 'images')})
+        crawler.crawl(
+            keyword=prompt,
+            max_num=1,
+            file_idx_offset=0)
+        # get file in the folder
+        folder_path =  os.path.join(os.path.dirname(__file__), 'images')
+        file_path = os.path.join(folder_path, os.listdir(folder_path)[0])
+        # upload to firebase
+        id = str(uuid.uuid4())
+        blob = bucket.blob(f'images/{id}.jpg')
+        blob.upload_from_filename(file_path)
+        blob.make_public()
+        url = blob.public_url
+        # delete the file
+        os.remove(file_path)
+    except:
+        url = "https://storage.googleapis.com/slidesllm.appspot.com/images/f7718626-3511-4297-a2bb-0c33ac381c8b.jpg"
+        
     return url
     
 def create_tts(text: str, voice: str = "Bill", model: str = "eleven_turbo_v2"):
