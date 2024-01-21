@@ -22,6 +22,7 @@ from elevenlabs import set_api_key
 from fastapi import FastAPI, HTTPException, Body
 from pydantic import BaseModel, Field
 from typing import List, Optional
+from icrawler.builtin import GoogleImageCrawler
 
 set_api_key(os.environ.get("XI_API_KEY"))
 
@@ -227,59 +228,15 @@ Your answer must follow the following json format.
     ]
 }"""
 
-
-"""
-
-[
-     {
-        "type":"show_slide",
-        "content":{
-           "template_id":"first_slide",
-           "title":"Life of Alan Turing",
-           "sub_title":"This is subtitle",
-           "image":"https://example.com/image.png"
-        }
-     },
-     {
-        "type":"display_element",
-        "content":{
-           "ids":[
-              "title"
-           ]
-        }
-     },
-     {
-        "type":"play_audio",
-        "content":{
-           "url":"https://example.com/example.mp3"
-        }
-     },
-     {
-        "type":"display_element",
-        "content":{
-           "ids":[
-              "sub_title",
-              "image"
-           ]
-        }
-     },
-     {
-        "type":"play_audio",
-        "content":{
-           "url":"https://example.com/example.mp3"
-        }
-     }
-  ]
-
-"""
 def create_slides(past_messages: list = []):
     
     response = client.chat.completions.create(
-    model="gpt-4-1106-preview",
-    response_format={ "type": "json_object" },
-    messages=[
-        {"role": "system", "content": PROMPT},
-    ] + past_messages,
+        model="gpt-4-1106-preview",
+        response_format={ "type": "json_object" },
+        messages=[
+            {"role": "system", "content": PROMPT},
+        ] + past_messages,
+        max_tokens=2000,
     )
     result = response.choices[0].message.content # this is json in string
     # parse json 
@@ -338,9 +295,27 @@ def format_script(input_text):
 
 
 def generate_image(prompt: str):
-    return "https://www.google.com/example.png"
-
-def create_tts(text: str, voice: str = "Bill", model: str = "eleven_multilingual_v2"):
+    # used crawler to get the image
+    crawler = GoogleImageCrawler(
+        downloader_threads=4,
+        storage={'root_dir': 'images'})
+    crawler.crawl(
+        keyword=prompt,
+        max_num=1,
+        file_idx_offset=0)
+    # get file in the folder
+    file_path =  os.listdir("images")[0]
+    # upload to firebase
+    id = str(uuid.uuid4())
+    blob = bucket.blob(f'images/{id}.jpg')
+    blob.upload_from_filename(file_path)
+    blob.make_public()
+    url = blob.public_url
+    # delete the file
+    os.remove(file_path)
+    return url
+    
+def create_tts(text: str, voice: str = "Bill", model: str = "eleven_turbo_v2"):
 
     audio: bytes = generate(
         text=text,

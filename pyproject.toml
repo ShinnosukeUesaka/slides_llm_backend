@@ -13,6 +13,7 @@ openai = "^1.8.0"
 python-dotenv = "^1.0.0"
 uvicorn = "^0.26.0"
 elevenlabs = "^0.2.27"
+icrawler = "^0.6.7"
 
 
 [build-system]
