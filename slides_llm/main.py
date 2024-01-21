@@ -272,6 +272,9 @@ def create_slides(past_messages: list = []):
                     }
                 )
             else:
+                # if there is , in the element, it means there are multiple elements, split
+                if "," in element:
+                    element = element.split(",")
                 actions.append(
                     {
                         "type": "display_element",
