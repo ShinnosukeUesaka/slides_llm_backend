@@ -12,6 +12,7 @@ fastapi = "^0.109.0"
 openai = "^1.8.0"
 python-dotenv = "^1.0.0"
 uvicorn = "^0.26.0"
+elevenlabs = "^0.2.27"
 
 
 [build-system]

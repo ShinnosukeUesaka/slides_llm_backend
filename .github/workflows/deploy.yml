@@ -23,7 +23,7 @@ jobs:
             echo "AR_REPO_NAME=dev-kotonohohack" >> $GITHUB_ENV
             echo "RUN_SERVICE_NAME=dev-konotohack" >> $GITHUB_ENV
           elif [[ "${{ github.ref }}" == 'refs/heads/main' ]]; then
-            echo "PROJECT_ID=slides-llm" >> $GITHUB_ENV
+            echo "PROJECT_ID=slidesllm" >> $GITHUB_ENV
             echo "GCP_SA_KEY=${{ secrets.GCP_SA_KEY }}"
             echo "AR_REPO_NAME=prd-slidesllm" >> $GITHUB_ENV
             echo "RUN_SERVICE_NAME=prd-slidesllm" >> $GITHUB_ENV
