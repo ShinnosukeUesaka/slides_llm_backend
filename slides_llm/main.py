@@ -273,8 +273,6 @@ def create_slides(past_messages: list = []):
                 )
             else:
                 # if there is , in the element, it means there are multiple elements, split
-                if "," in element:
-                    element = element.split(",")
                 actions.append(
                     {
                         "type": "display_element",
@@ -294,7 +292,11 @@ def format_script(input_text):
         if ']' in part:
             marker, text = part.split(']', 1)
             # Add the marker as a list
-            formatted_output.append([marker.strip()])
+            marker = marker.strip()
+            if "," in marker:
+                formatted_output.append(marker.split(","))
+            else:
+                formatted_output.append([marker.strip()])
             # Add the text if it's not empty
             text = text.strip()
             if text:
