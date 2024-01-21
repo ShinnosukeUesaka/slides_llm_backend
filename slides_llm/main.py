@@ -40,7 +40,7 @@ app = FastAPI()
 def read_root():
     return {"Hello": "World"}
 
-@app.post("/conversation")
+@app.post("/conversations")
 def create_conversation():
     # create id
     conversation_id = str(uuid.uuid4())
@@ -54,7 +54,7 @@ def create_conversation():
     db.collection("conversations").document(conversation_id).set(conversation)
     return conversation
 
-@app.post("/conversation/{conversation_id}/message")
+@app.post("/conversations/{conversation_id}/message")
 def create_message(conversation_id: str, message: str):
     # get conversation
     conversation_ref = db.collection("conversations").document(conversation_id)
