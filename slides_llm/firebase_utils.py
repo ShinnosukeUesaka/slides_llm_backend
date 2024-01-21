@@ -7,4 +7,4 @@ if os.getenv("ENVIRONEMENT") == "local":
 else:
     initialize_app()
 db = firestore.client()
-bucket = storage.bucket("gs://slidesllm.appspot.com/")
+bucket = storage.bucket("slidesllm.appspot.com")
