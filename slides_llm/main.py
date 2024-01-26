@@ -40,9 +40,6 @@ app.add_middleware(
 )
 
 
-app = FastAPI()
-
-
 class Message(BaseModel):
     message: str
 
