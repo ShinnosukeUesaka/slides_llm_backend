@@ -90,6 +90,7 @@ Example of the script)
 
 Other Instruction:
 For images on the slides, write 3 keywords. The keywords would be used to search an image online.
+Use variety of templates.
 
 Your answer must follow the following json format.
 
