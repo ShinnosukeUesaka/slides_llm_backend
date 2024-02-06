@@ -1,5 +1,11 @@
 # slides_llm_backend
-GenUI Hackathon
+GenUI Hackathon, Answer your question in presentation style using slides and audio
+
+https://github.com/ShinnosukeUesaka/slides_llm_backend/assets/45286939/5b27f732-2db2-46ed-87ac-571b90bd1101
+
+
+## Demo
+https://slides-llm-front.vercel.app/
 
 ## Frontend 
 [https://github.com/ShinnosukeUesaka/slides-llm-front](https://github.com/ShinnosukeUesaka/slides-llm-front)
