@@ -2,7 +2,7 @@
 GenUI Hackathon
 
 ## Frontend 
-https://github.com/tsengtinghan/GenUI
+[https://github.com/tsengtinghan/GenUI](https://github.com/ShinnosukeUesaka/slides-llm-front)
 
 ## Prompt used
 ```
