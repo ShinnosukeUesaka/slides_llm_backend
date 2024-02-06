@@ -7,6 +7,8 @@ https://github.com/ShinnosukeUesaka/slides_llm_backend/assets/45286939/5b27f732-
 ## Demo
 https://slides-llm-front.vercel.app/
 
+(Takes up to  3 min to generate)
+
 ## Frontend 
 [https://github.com/ShinnosukeUesaka/slides-llm-front](https://github.com/ShinnosukeUesaka/slides-llm-front)
 
